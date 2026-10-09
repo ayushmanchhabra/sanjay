@@ -46,7 +46,7 @@ describe("NW.js Selenium ServiceBuilder test suite", async () => {
    */
   it("Get application title", async function () {
     const title = await driver.getTitle();
-    assert(title, "Localghost");
+    assert(title, "Sanjay");
   });
 
   /**

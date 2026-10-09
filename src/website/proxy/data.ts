@@ -11,7 +11,7 @@ export const capturedExchanges: CapturedExchange[] = [
       path: "/v1/session",
       headers: [
         ["Host", "api.target.dev"],
-        ["User-Agent", "localghost/0.0.0"],
+        ["User-Agent", "sanjay/0.0.0"],
         ["Accept", "application/json"],
         ["Cookie", "session=8f3a1c2e9b"],
       ],
@@ -36,7 +36,7 @@ export const capturedExchanges: CapturedExchange[] = [
       path: "/v1/auth/login",
       headers: [
         ["Host", "api.target.dev"],
-        ["User-Agent", "localghost/0.0.0"],
+        ["User-Agent", "sanjay/0.0.0"],
         ["Content-Type", "application/json"],
         ["Content-Length", "47"],
       ],
@@ -62,7 +62,7 @@ export const capturedExchanges: CapturedExchange[] = [
       path: "/v1/users?limit=25&offset=0",
       headers: [
         ["Host", "api.target.dev"],
-        ["User-Agent", "localghost/0.0.0"],
+        ["User-Agent", "sanjay/0.0.0"],
         ["Accept", "application/json"],
         ["Cookie", "session=8f3a1c2e9b"],
       ],
@@ -87,7 +87,7 @@ export const capturedExchanges: CapturedExchange[] = [
       path: "/v1/users/2/role",
       headers: [
         ["Host", "api.target.dev"],
-        ["User-Agent", "localghost/0.0.0"],
+        ["User-Agent", "sanjay/0.0.0"],
         ["Content-Type", "application/json"],
         ["Cookie", "session=8f3a1c2e9b"],
       ],
@@ -113,7 +113,7 @@ export const capturedExchanges: CapturedExchange[] = [
       path: "/v1/users/../../etc/passwd",
       headers: [
         ["Host", "api.target.dev"],
-        ["User-Agent", "localghost/0.0.0"],
+        ["User-Agent", "sanjay/0.0.0"],
         ["Accept", "*/*"],
       ],
     },
@@ -137,7 +137,7 @@ export const capturedExchanges: CapturedExchange[] = [
       path: "/v1/reports",
       headers: [
         ["Host", "api.target.dev"],
-        ["User-Agent", "localghost/0.0.0"],
+        ["User-Agent", "sanjay/0.0.0"],
         ["Content-Type", "application/json"],
         ["Cookie", "session=8f3a1c2e9b"],
       ],
@@ -163,7 +163,7 @@ export const capturedExchanges: CapturedExchange[] = [
       path: "/v1/reports/91",
       headers: [
         ["Host", "api.target.dev"],
-        ["User-Agent", "localghost/0.0.0"],
+        ["User-Agent", "sanjay/0.0.0"],
         ["Cookie", "session=8f3a1c2e9b"],
       ],
     },
@@ -187,7 +187,7 @@ export const capturedExchanges: CapturedExchange[] = [
       path: "/static/build.js",
       headers: [
         ["Host", "cdn.target.dev"],
-        ["User-Agent", "localghost/0.0.0"],
+        ["User-Agent", "sanjay/0.0.0"],
         ["Accept", "*/*"],
       ],
     },

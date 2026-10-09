@@ -179,8 +179,8 @@ export interface GeneratedCA {
 // issuer, so it must stay byte-identical between the two call sites.
 function caSubjectName(): Buffer {
   return derName([
-    [COMMON_NAME_OID, "Localghost Root CA"],
-    [ORGANIZATION_OID, "Localghost"],
+    [COMMON_NAME_OID, "Sanjay Root CA"],
+    [ORGANIZATION_OID, "Sanjay"],
   ]);
 }
 
@@ -372,7 +372,7 @@ function pemToDer(pem: string): Buffer {
 // --- Persistence ---
 
 function getCADir(): string {
-  return join(homedir(), ".localghost");
+  return join(homedir(), ".sanjay");
 }
 
 function getCAPaths(): { certPath: string; keyPath: string } {

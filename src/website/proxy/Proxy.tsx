@@ -81,7 +81,7 @@ export default function Proxy() {
           <input
             ref={caFileInputRef}
             type="file"
-            nwsaveas="localghost-ca.pem"
+            nwsaveas="sanjay-ca.pem"
             className="hidden"
             onChange={handleCAFileChosen}
           />

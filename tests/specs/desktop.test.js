@@ -6,7 +6,7 @@ import { after, before, describe, it } from "node:test";
 import get from "@nwutils/getter";
 import chrome from "selenium-webdriver/chrome.js";
 
-import nwOptions from "../../.github/config/opt.js";
+import nwOptions from "../../config/opt.js";
 
 describe("NW.js Selenium ServiceBuilder test suite", async () => {
   let driver = undefined;

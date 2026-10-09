@@ -13,7 +13,7 @@ const ARCH_KV = {
 };
 
 const options = {
-  version: "0.115.0",
+  version: "0.114.1",
   flavor: "sdk",
   platform: PLATFORM_KV[process.platform],
   arch: ARCH_KV[process.arch],

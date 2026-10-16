@@ -1,0 +1,73 @@
+name: Node.js CD
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-24.04
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - name: Run Release Please
+        id: release
+        uses: googleapis/release-please-action@v5.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: .github/release-please/config.json
+          manifest-file: .github/release-please/manifest.json
+
+  appimage:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+        include:
+          - os: ubuntu-24.04
+            display: AppImage Intel
+          - os: ubuntu-24.04-arm
+            display: AppImage ARM
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.display }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Read Node.js and npm versions from devEngines
+        shell: bash
+        run: |
+          echo "NODE_VERSION=$(jq -r '.devEngines.runtime.version' package.json)" >> "$GITHUB_ENV"
+          echo "NPM_VERSION=$(jq -r '.devEngines.packageManager.version' package.json)" >> "$GITHUB_ENV"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup npm
+        run: npm install -g npm@${{ env.NPM_VERSION }}
+
+      - name: Install third party dependencies
+        run: npm ci
+
+      - name: Build website and server
+        run: npm run bld:website && npm run bld:server
+
+      - name: Package AppImage
+        run: npm run pkg:desktop
+
+      - name: Upload AppImage to release
+        run: gh release upload "${{ needs.release-please.outputs.tag_name }}" out/*.AppImage --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,21 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "changelog-sections": [
+        { "type": "feat", "section": "Features", "hidden": false },
+        { "type": "fix", "section": "Bug Fixes", "hidden": false },
+        { "type": "chore", "section": "Chores", "hidden": false }
+      ],
+      "package-name": "sanjay",
+      "include-component-in-tag": false,
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "src/desktop/package.json",
+          "jsonpath": "$.version"
+        }
+      ]
+    }
+  }
+}

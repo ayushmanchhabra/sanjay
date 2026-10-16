@@ -47,7 +47,7 @@
     "prettier": "^3.9.10",
     "selenium-webdriver": "^4.51.0",
     "tailwindcss": "^4.3.3",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "typescript-eslint": "^8.71.2",
     "wait-on": "^9.5.1"
   },

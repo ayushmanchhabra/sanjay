@@ -14,6 +14,8 @@ updates:
     directory: ".github/workflows"
     schedule:
       interval: "monthly"
+    ignore:
+      - dependency-name: "typescript"
     groups:
       gha:
         patterns:

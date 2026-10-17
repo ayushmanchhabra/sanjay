@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/ayushmanchhabra/sanjay/compare/v0.1.1...v0.2.0) (2026-10-17)
+
+
+### Features
+
+* **web:** improve proxy, add repeater, add intruder ([#8](https://github.com/ayushmanchhabra/sanjay/issues/8)) ([bf89fbc](https://github.com/ayushmanchhabra/sanjay/commit/bf89fbc75faad1799732d96e4273e181e34b9eaf))
+
+
+### Bug Fixes
+
+* set MacOS options required for DMG installer ([3e91c64](https://github.com/ayushmanchhabra/sanjay/commit/3e91c645155fd77f919361766651fdc5c9672ea5))
+
 ## [0.1.1](https://github.com/ayushmanchhabra/sanjay/compare/v0.1.0...v0.1.1) (2026-10-17)
 
 ### Chores

@@ -4,6 +4,7 @@ node_modules
 # application
 cache
 out
+release
 src/desktop/main.js
 src/desktop/server.js
 src/desktop/styles.css

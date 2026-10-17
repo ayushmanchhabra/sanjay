@@ -12,6 +12,13 @@ const ARCH_KV = {
   arm64: "arm64",
 };
 
+// Icon format for each platform
+const ICON_KV = {
+  osx: "./assets/icon.icns",
+  linux: "./assets/icon.png",
+  win: "./assets/icon.ico",
+};
+
 const options = {
   version: "0.115.0",
   flavor: "sdk",
@@ -25,7 +32,11 @@ const options = {
   glob: false,
   argv: [],
   app: {
-    icon: "./assets/icon.png",
+    icon: ICON_KV[PLATFORM_KV[process.platform]],
+    // MacOS
+    LSApplicationCategoryType: "public.app-category.developer-tools",
+    CFBundleIdentifier: "com.ayushmanchhabra.sanjay",
+    NSHumanReadableCopyright: "Copyright © 2026 Ayushman Chhabra",
   },
   managedManifest: "./src/desktop/package.json",
   cache: true,

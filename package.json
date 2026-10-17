@@ -12,6 +12,7 @@
     "lint:fix": "eslint --fix",
     "type": "tsc --noEmit",
     "doc": "node ./config/doc.js",
+    "icon": "node ./config/icon.js",
     "dev": "concurrently -k npm:dev:website npm:dev:css npm:dev:server npm:dev:desktop",
     "dev:website": "esbuild ./src/website/main.tsx --bundle --outdir=./src/website --watch --servedir=./src/website --serve=8080",
     "dev:css": "tailwindcss -i ./src/website/styles.css -o ./src/desktop/styles.css --watch",

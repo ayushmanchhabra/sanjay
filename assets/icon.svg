@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Background -->
+  <rect x="64" y="64" width="896" height="896" rx="200" fill="#29243f"/>
+  <!-- Signal rings: the network Sanjay watches -->
+  <circle cx="512" cy="512" r="370" fill="none" stroke="#f3f0ff" stroke-opacity="0.12" stroke-width="20"/>
+  <!-- Eye -->
+  <path d="M 150 512 Q 512 112 874 512 Q 512 912 150 512 Z" fill="#f3f0ff"/>
+  <!-- Iris -->
+  <circle cx="512" cy="512" r="158" fill="#f59e0b"/>
+  <!-- Crosshair ticks -->
+  <rect x="505" y="354" width="14" height="52" fill="#29243f"/>
+  <rect x="505" y="618" width="14" height="52" fill="#29243f"/>
+  <rect x="354" y="505" width="52" height="14" fill="#29243f"/>
+  <rect x="618" y="505" width="52" height="14" fill="#29243f"/>
+  <!-- Pupil -->
+  <circle cx="512" cy="512" r="62" fill="#29243f"/>
+  <circle cx="540" cy="484" r="18" fill="#f3f0ff"/>
+</svg>

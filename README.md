@@ -20,7 +20,6 @@ Grab the latest build from the [releases page](https://github.com/ayushmanchhabr
 
 ## Vision
 
-- Replicate burp suite/caido functionalities + intuitive background tasks which make enumeration/discovery not just easy but automatic.
 - Android testing setup
 - Network testing setup
 - VPN integration - IP rotation, etc

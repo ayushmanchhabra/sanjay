@@ -24,19 +24,27 @@ jobs:
           config-file: .github/release-please/config.json
           manifest-file: .github/release-please/manifest.json
 
-  appimage:
+  package:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created == 'true' }}
     strategy:
       matrix:
-        os:
-          - ubuntu-24.04
-          - ubuntu-24.04-arm
         include:
           - os: ubuntu-24.04
             display: AppImage Intel
+            artifact: release/*.AppImage
           - os: ubuntu-24.04-arm
             display: AppImage ARM
+            artifact: release/*.AppImage
+          - os: windows-2025
+            display: NSIS Intel
+            artifact: release/*-Setup.exe
+          - os: macos-26
+            display: DMG ARM
+            artifact: release/*.dmg
+          - os: macos-26-intel
+            display: DMG Intel
+            artifact: release/*.dmg
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.display }}
@@ -58,16 +66,28 @@ jobs:
       - name: Setup npm
         run: npm install -g npm@${{ env.NPM_VERSION }}
 
+      - name: Setup NSIS
+        if: ${{ runner.os == 'Windows' }}
+        shell: bash
+        run: |
+          choco install nsis -y --no-progress
+          echo "C:\Program Files (x86)\NSIS" >> "$GITHUB_PATH"
+
+      - name: Run npm scripts with Git Bash
+        if: ${{ runner.os == 'Windows' }}
+        run: npm config set script-shell "C:\Program Files\Git\bin\bash.exe"
+
       - name: Install third party dependencies
         run: npm ci
 
       - name: Build website and server
         run: npm run bld:website && npm run bld:server
 
-      - name: Package AppImage
+      - name: Package application
         run: npm run pkg:desktop
 
-      - name: Upload AppImage to release
-        run: gh release upload "${{ needs.release-please.outputs.tag_name }}" out/*.AppImage --clobber
+      - name: Upload package to release
+        shell: bash
+        run: gh release upload "${{ needs.release-please.outputs.tag_name }}" ${{ matrix.artifact }} --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

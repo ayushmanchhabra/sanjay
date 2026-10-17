@@ -183,26 +183,39 @@ export default function Proxy() {
         </div>
       )}
 
-      <div className="flex min-h-0 flex-1">
-        <section className="flex min-w-0 flex-1 flex-col border-r border-neutral-800">
-          <div className="flex h-8 shrink-0 items-center justify-between border-b border-neutral-800 bg-neutral-900/60 px-3 text-xs font-medium uppercase tracking-wide text-neutral-500">
-            <span>Requests</span>
+      <div className="flex min-h-0 flex-1 flex-col">
+        {/* One list for both sides, so a request and its response always
+            scroll together. Both halves of the view reserve the same
+            scrollbar gutter, so their column dividers line up. */}
+        <div className="flex-1 basis-1/2 overflow-y-auto [scrollbar-gutter:stable]">
+          {/* Sticky inside the scroll area, so the columns line up with
+              the rows whether or not a scrollbar is shown. */}
+          <div className="sticky top-0 z-10 grid grid-cols-2 border-b border-neutral-800 bg-neutral-900 text-xs font-medium uppercase tracking-wide text-neutral-500">
+            <span className="flex h-8 items-center border-r border-neutral-800 px-3">
+              Requests
+            </span>
+            <span className="flex h-8 items-center px-3">Responses</span>
           </div>
 
-          <div className="flex-1 basis-1/2 overflow-y-auto">
-            {capturedExchanges.map((entry) => {
-              const isSelected = entry.id === selectedId;
-              return (
-                <button
-                  type="button"
-                  key={entry.id}
-                  onClick={() => setSelectedId(entry.id)}
-                  className={`grid w-full grid-cols-[3.25rem_1fr_4.5rem] items-center gap-2 border-l-2 px-3 py-1.5 text-left text-xs ${
-                    isSelected
-                      ? "border-l-sky-500 bg-sky-500/10"
-                      : "border-l-transparent hover:bg-neutral-900"
-                  }`}
-                >
+          {capturedExchanges.map((entry) => {
+            const isSelected = entry.id === selectedId;
+            const contentType =
+              header(entry.response.headers, "content-type") ?? "-";
+            const size = entry.response.body
+              ? `${entry.response.body.length}B`
+              : "0B";
+            return (
+              <button
+                type="button"
+                key={entry.id}
+                onClick={() => setSelectedId(entry.id)}
+                className={`grid w-full grid-cols-2 border-l-2 text-left text-xs ${
+                  isSelected
+                    ? "border-l-sky-500 bg-sky-500/10"
+                    : "border-l-transparent hover:bg-neutral-900"
+                }`}
+              >
+                <span className="grid min-w-0 grid-cols-[3.25rem_1fr_4.5rem] items-center gap-2 border-r border-neutral-800 py-1.5 pr-3 pl-2.5">
                   <span
                     className={`inline-flex items-center justify-center rounded border px-1.5 py-0.5 text-[10px] font-semibold ${methodColor(
                       entry.request.method,
@@ -219,40 +232,8 @@ export default function Proxy() {
                   <span className="text-right tabular-nums text-neutral-500">
                     {entry.time}
                   </span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="flex-1 basis-1/2 overflow-auto border-t border-neutral-800 bg-neutral-950 p-3 font-mono text-xs leading-relaxed whitespace-pre-wrap break-all text-neutral-300">
-            {selected ? rawRequest(selected.request) : "Select an exchange"}
-          </div>
-        </section>
-
-        <section className="flex min-w-0 flex-1 flex-col">
-          <div className="flex h-8 shrink-0 items-center justify-between border-b border-neutral-800 bg-neutral-900/60 px-3 text-xs font-medium uppercase tracking-wide text-neutral-500">
-            <span>Responses</span>
-          </div>
-
-          <div className="flex-1 basis-1/2 overflow-y-auto">
-            {capturedExchanges.map((entry) => {
-              const isSelected = entry.id === selectedId;
-              const contentType =
-                header(entry.response.headers, "content-type") ?? "-";
-              const size = entry.response.body
-                ? `${entry.response.body.length}B`
-                : "0B";
-              return (
-                <button
-                  type="button"
-                  key={entry.id}
-                  onClick={() => setSelectedId(entry.id)}
-                  className={`grid w-full grid-cols-[3.25rem_1fr_4.5rem] items-center gap-2 border-l-2 px-3 py-1.5 text-left text-xs ${
-                    isSelected
-                      ? "border-l-sky-500 bg-sky-500/10"
-                      : "border-l-transparent hover:bg-neutral-900"
-                  }`}
-                >
+                </span>
+                <span className="grid min-w-0 grid-cols-[3.25rem_1fr] items-center gap-2 px-3 py-1.5">
                   <span
                     className={`inline-flex items-center justify-center rounded border px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${statusColor(
                       entry.response.status,
@@ -264,18 +245,20 @@ export default function Proxy() {
                     {contentType}
                     <span className="text-neutral-600"> · {size}</span>
                   </span>
-                  <span className="text-right tabular-nums text-neutral-500">
-                    {entry.time}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
-          <div className="flex-1 basis-1/2 overflow-auto border-t border-neutral-800 bg-neutral-950 p-3 font-mono text-xs leading-relaxed whitespace-pre-wrap break-all text-neutral-300">
+        <div className="grid min-h-0 flex-1 basis-1/2 grid-cols-2 overflow-hidden [scrollbar-gutter:stable] border-t border-neutral-800 bg-neutral-950 font-mono text-xs leading-relaxed whitespace-pre-wrap break-all text-neutral-300">
+          <div className="overflow-auto border-r border-neutral-800 p-3">
+            {selected ? rawRequest(selected.request) : "Select an exchange"}
+          </div>
+          <div className="overflow-auto p-3">
             {selected ? rawResponse(selected) : "Select an exchange"}
           </div>
-        </section>
+        </div>
       </div>
     </div>
   );

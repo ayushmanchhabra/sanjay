@@ -31,6 +31,26 @@ export default function Proxy() {
     if (destinationPath) bridge?.exportCACertificate(destinationPath);
   }
 
+  function handleOpenBrowser() {
+    try {
+      bridge?.openBrowser();
+    } catch (err) {
+      window.alert((err as Error).message);
+    }
+  }
+
+  function handleRegenerateCA() {
+    const confirmed = window.confirm(
+      "Regenerate the CA certificate?\n\nAnything that trusts the current certificate will stop trusting Sanjay until the new one is exported and imported again. An open Sanjay browser is restarted automatically.",
+    );
+    if (!confirmed) return;
+    try {
+      bridge?.regenerateCA();
+    } catch (err) {
+      window.alert((err as Error).message);
+    }
+  }
+
   function toggleIntercept() {
     const next = !intercepting;
     bridge?.setInterceptEnabled(next);
@@ -59,6 +79,15 @@ export default function Proxy() {
           </span>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            disabled={!bridge}
+            onClick={handleOpenBrowser}
+            title={bridge ? undefined : "Only available in the desktop app"}
+            className="rounded border border-sky-400/40 bg-sky-400/10 px-2.5 py-1 text-xs font-medium text-sky-300 hover:bg-sky-400/20 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-sky-400/10"
+          >
+            Open Browser
+          </button>
           <button
             type="button"
             disabled={!bridge}
@@ -93,6 +122,15 @@ export default function Proxy() {
             className="rounded border border-neutral-700 bg-neutral-800 px-2.5 py-1 text-xs font-medium text-neutral-300 hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-neutral-800"
           >
             Export CA Certificate
+          </button>
+          <button
+            type="button"
+            disabled={!bridge}
+            onClick={handleRegenerateCA}
+            title={bridge ? undefined : "Only available in the desktop app"}
+            className="rounded border border-neutral-700 bg-neutral-800 px-2.5 py-1 text-xs font-medium text-neutral-300 hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-neutral-800"
+          >
+            Regenerate CA
           </button>
         </div>
       </header>

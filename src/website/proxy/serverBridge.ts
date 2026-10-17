@@ -16,6 +16,8 @@ export interface ServerBridge {
   onExchange: (listener: (exchange: CapturedExchange) => void) => () => void;
   getCACertificateInfo: () => CACertificateInfo;
   exportCACertificate: (destinationPath: string) => string;
+  regenerateCA: () => void;
+  openBrowser: () => void;
   isInterceptEnabled: () => boolean;
   setInterceptEnabled: (enabled: boolean) => void;
   getPendingRequests: () => PendingInterceptedRequest[];
@@ -32,6 +34,8 @@ const BRIDGE_METHODS: (keyof ServerBridge)[] = [
   "onExchange",
   "getCACertificateInfo",
   "exportCACertificate",
+  "regenerateCA",
+  "openBrowser",
   "isInterceptEnabled",
   "setInterceptEnabled",
   "getPendingRequests",

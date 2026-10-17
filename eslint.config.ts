@@ -19,10 +19,12 @@ export default defineConfig([
   pluginReact.configs.flat["jsx-runtime"],
   { settings: { react: { version: "19.2.8" } } },
   {
+    // TODO: move this into @types/nw.js
     // nwsaveas is a real NW.js file-dialog attribute, typed in src/website/nwjs.d.ts.
     rules: { "react/no-unknown-property": ["error", { ignore: ["nwsaveas"] }] },
   },
   {
+    // TODO: remove this once merged into @types/nw.js
     // Declaration merging requires matching InputHTMLAttributes<T>'s type
     // parameter even though this augmentation doesn't use it.
     files: ["src/website/nwjs.d.ts"],

@@ -259,6 +259,9 @@ function subjectAltNameEntry(hostname: string): Buffer {
 }
 
 export interface LeafCertificate {
+  // The leaf followed by the CA, so the CA is part of the chain the
+  // client is sent — Chromium's --ignore-certificate-errors-spki-list
+  // (see browser.ts) matches against certificates in that chain.
   certPem: string;
   keyPem: string;
 }
@@ -348,7 +351,7 @@ export function getLeafCertificate(hostname: string): LeafCertificate {
   );
 
   const leaf: LeafCertificate = {
-    certPem: toPem(certDer, "CERTIFICATE"),
+    certPem: toPem(certDer, "CERTIFICATE") + ca.certPem,
     keyPem: privateKey.export({ type: "pkcs8", format: "pem" }) as string,
   };
   leafCache.set(hostname, leaf);
@@ -401,10 +404,36 @@ export function loadOrCreateCA(): GeneratedCA {
   }
 
   const ca = generateSelfSignedCA();
+  saveCA(ca);
+  return ca;
+}
+
+function saveCA(ca: GeneratedCA): void {
+  const { certPath, keyPath } = getCAPaths();
   mkdirSync(getCADir(), { recursive: true });
   writeFileSync(certPath, ca.certPem, { mode: 0o644 });
   writeFileSync(keyPath, ca.keyPem, { mode: 0o600 });
+}
+
+// Replaces the persisted CA with a freshly generated one. Every
+// certificate issued under the old CA stops being trusted, so the new
+// one has to be imported again wherever the old one was.
+export function regenerateCA(): GeneratedCA {
+  const ca = generateSelfSignedCA();
+  saveCA(ca);
+  leafCache.clear();
   return ca;
+}
+
+// Base64 SHA-256 of the CA's SubjectPublicKeyInfo, the format
+// Chromium's --ignore-certificate-errors-spki-list expects.
+export function getCASpkiHash(): string {
+  const { certPem } = loadOrCreateCA();
+  const spkiDer = new X509Certificate(certPem).publicKey.export({
+    type: "spki",
+    format: "der",
+  });
+  return createHash("sha256").update(spkiDer).digest("base64");
 }
 
 export interface CACertificateInfo {

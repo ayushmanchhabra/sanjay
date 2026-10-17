@@ -1,4 +1,9 @@
-import type { CapturedExchange, CapturedRequest, HttpMethod } from "./types";
+import type {
+  CapturedExchange,
+  CapturedRequest,
+  CapturedResponse,
+  HttpMethod,
+} from "./types";
 
 export function rawRequest(request: CapturedRequest): string {
   const lines = [
@@ -10,8 +15,7 @@ export function rawRequest(request: CapturedRequest): string {
     : lines.join("\n");
 }
 
-export function rawResponse(entry: CapturedExchange): string {
-  const { response } = entry;
+export function formatResponse(response: CapturedResponse): string {
   const lines = [
     `HTTP/1.1 ${response.status} ${response.statusText}`,
     ...response.headers.map(([name, value]) => `${name}: ${value}`),
@@ -19,6 +23,42 @@ export function rawResponse(entry: CapturedExchange): string {
   return response.body
     ? `${lines.join("\n")}\n\n${response.body}`
     : lines.join("\n");
+}
+
+export function rawResponse(entry: CapturedExchange): string {
+  return formatResponse(entry.response);
+}
+
+// Parses an editable raw HTTP request (request line, headers, blank
+// line, body) back into the method/path/headers/body a request is made
+// of. The target (scheme/host) isn't in the request line for an
+// origin-form request, so it's carried separately by Repeater/Intruder.
+export function parseRawRequest(
+  raw: string,
+): Pick<CapturedRequest, "method" | "path" | "headers" | "body"> {
+  const normalized = raw.replace(/\r\n/g, "\n");
+  const separator = normalized.indexOf("\n\n");
+  const head = separator === -1 ? normalized : normalized.slice(0, separator);
+  const bodyText = separator === -1 ? "" : normalized.slice(separator + 2);
+
+  const lines = head.split("\n");
+  const requestLine = lines.shift() ?? "";
+  const [method = "GET", path = "/"] = requestLine.trim().split(/\s+/);
+
+  const headers: [string, string][] = [];
+  for (const line of lines) {
+    if (line.trim() === "") continue;
+    const colon = line.indexOf(":");
+    if (colon === -1) continue;
+    headers.push([line.slice(0, colon).trim(), line.slice(colon + 1).trim()]);
+  }
+
+  return {
+    method: method.toUpperCase() as HttpMethod,
+    path,
+    headers,
+    body: bodyText.length > 0 ? bodyText : undefined,
+  };
 }
 
 const METHOD_COLOR: Record<HttpMethod, string> = {

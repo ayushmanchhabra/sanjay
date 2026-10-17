@@ -1,4 +1,8 @@
-import type { CapturedExchange, CapturedRequest } from "./types";
+import type {
+  CapturedExchange,
+  CapturedRequest,
+  CapturedResponse,
+} from "./types";
 
 export interface CACertificateInfo {
   subject: string;
@@ -16,6 +20,8 @@ export interface ServerBridge {
   onExchange: (listener: (exchange: CapturedExchange) => void) => () => void;
   getCACertificateInfo: () => CACertificateInfo;
   exportCACertificate: (destinationPath: string) => string;
+  regenerateCA: () => void;
+  openBrowser: () => void;
   isInterceptEnabled: () => boolean;
   setInterceptEnabled: (enabled: boolean) => void;
   getPendingRequests: () => PendingInterceptedRequest[];
@@ -25,6 +31,9 @@ export interface ServerBridge {
   onPendingRequestResolved: (listener: (id: string) => void) => () => void;
   forwardPendingRequest: (id: string) => void;
   dropPendingRequest: (id: string) => void;
+  // Issues a one-off request (Repeater/Intruder), outside the
+  // intercept/capture path. Resolves with the response.
+  sendRequest: (request: CapturedRequest) => Promise<CapturedResponse>;
 }
 
 const BRIDGE_METHODS: (keyof ServerBridge)[] = [
@@ -32,6 +41,8 @@ const BRIDGE_METHODS: (keyof ServerBridge)[] = [
   "onExchange",
   "getCACertificateInfo",
   "exportCACertificate",
+  "regenerateCA",
+  "openBrowser",
   "isInterceptEnabled",
   "setInterceptEnabled",
   "getPendingRequests",
@@ -39,6 +50,7 @@ const BRIDGE_METHODS: (keyof ServerBridge)[] = [
   "onPendingRequestResolved",
   "forwardPendingRequest",
   "dropPendingRequest",
+  "sendRequest",
 ];
 
 // The proxy runs in NW.js's node-main context (src/server/desktop.ts,

@@ -2,7 +2,7 @@ import { useRef, useState, type ChangeEvent } from "react";
 
 import { methodColor, rawRequest, rawResponse, statusColor } from "./format";
 import { getServerBridge } from "./serverBridge";
-import type { CapturedExchange } from "./types";
+import type { CapturedExchange, CapturedRequest } from "./types";
 import { useCapturedExchanges } from "./useCapturedExchanges";
 import { usePendingRequests } from "./usePendingRequests";
 
@@ -10,7 +10,13 @@ function header(headers: [string, string][], name: string): string | undefined {
   return headers.find(([key]) => key.toLowerCase() === name.toLowerCase())?.[1];
 }
 
-export default function Proxy() {
+export default function Proxy({
+  onSendToRepeater,
+  onSendToIntruder,
+}: {
+  onSendToRepeater: (request: CapturedRequest) => void;
+  onSendToIntruder: (request: CapturedRequest) => void;
+}) {
   const capturedExchanges = useCapturedExchanges();
   const pendingRequests = usePendingRequests();
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
@@ -58,7 +64,7 @@ export default function Proxy() {
   }
 
   return (
-    <div className="flex h-screen w-screen flex-col bg-neutral-950 text-neutral-200">
+    <div className="flex h-full w-full flex-col bg-neutral-950 text-neutral-200">
       <header className="flex h-11 shrink-0 items-center justify-between border-b border-neutral-800 bg-neutral-900 px-4">
         <div className="flex items-center gap-3">
           <span className="text-sm font-semibold text-neutral-100">Proxy</span>
@@ -251,12 +257,39 @@ export default function Proxy() {
           })}
         </div>
 
-        <div className="grid min-h-0 flex-1 basis-1/2 grid-cols-2 overflow-hidden [scrollbar-gutter:stable] border-t border-neutral-800 bg-neutral-950 font-mono text-xs leading-relaxed whitespace-pre-wrap break-all text-neutral-300">
-          <div className="overflow-auto border-r border-neutral-800 p-3">
-            {selected ? rawRequest(selected.request) : "Select an exchange"}
+        <div className="flex min-h-0 flex-1 basis-1/2 flex-col border-t border-neutral-800">
+          <div className="flex h-8 shrink-0 items-center justify-between gap-2 border-b border-neutral-800 bg-neutral-900/60 px-3 text-xs">
+            <span className="truncate font-mono text-neutral-500">
+              {selected
+                ? `${selected.request.method} ${selected.request.scheme}://${selected.request.host}${selected.request.path}`
+                : "No exchange selected"}
+            </span>
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                type="button"
+                disabled={!selected}
+                onClick={() => selected && onSendToRepeater(selected.request)}
+                className="rounded border border-neutral-700 bg-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-300 hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-neutral-800"
+              >
+                → Repeater
+              </button>
+              <button
+                type="button"
+                disabled={!selected}
+                onClick={() => selected && onSendToIntruder(selected.request)}
+                className="rounded border border-neutral-700 bg-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-300 hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-neutral-800"
+              >
+                → Intruder
+              </button>
+            </div>
           </div>
-          <div className="overflow-auto p-3">
-            {selected ? rawResponse(selected) : "Select an exchange"}
+          <div className="grid min-h-0 flex-1 grid-cols-2 overflow-hidden [scrollbar-gutter:stable] bg-neutral-950 font-mono text-xs leading-relaxed break-all whitespace-pre-wrap text-neutral-300">
+            <div className="overflow-auto border-r border-neutral-800 p-3">
+              {selected ? rawRequest(selected.request) : "Select an exchange"}
+            </div>
+            <div className="overflow-auto p-3">
+              {selected ? rawResponse(selected) : "Select an exchange"}
+            </div>
           </div>
         </div>
       </div>

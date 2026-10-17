@@ -24,6 +24,7 @@ import {
   setInterceptEnabled,
 } from "./intercept.ts";
 import { createProxyServer } from "./proxy.ts";
+import { sendRequest } from "./send.ts";
 
 const HOST = "127.0.0.1";
 const PORT = 8080;
@@ -76,5 +77,6 @@ export {
   onExchange,
   onPendingRequest,
   onPendingRequestResolved,
+  sendRequest,
   setInterceptEnabled,
 };
